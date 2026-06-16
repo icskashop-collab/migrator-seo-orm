@@ -7,8 +7,7 @@
 <title>SEO Dashboard — migrator.me</title>
 <link rel="preconnect" href="https://fonts.gstatic.com/">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&subset=latin,cyrillic&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js">showView("stages");
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <style>
   :root{
     --navy:#0a3161; --red:#b71414; --sky:#e8f4ff; --ink:#222;
@@ -2501,151 +2500,57 @@
 const views = ['stages','orm','budget','seo','sem','deep','comp','links','tools'];
 
 function showView(v){
-  views.forEach(id=>{
-    const el = document.getElementById('view-'+id);
-    if(el) el.style.display = id===v ? '' : 'none';
+  views.forEach(function(id){
+    var el = document.getElementById('view-'+id);
+    if(el) el.style.display = (id===v) ? '' : 'none';
   });
-  document.querySelectorAll('.tab').forEach(t=>{
-    t.classList.toggle('active', t.id==='tab'+v.charAt(0).toUpperCase()+v.slice(1));
+  document.querySelectorAll('.tab').forEach(function(t){
+    var tid = t.id.replace('tab','').toLowerCase();
+    t.classList.toggle('active', tid===v);
   });
-  const sn = document.getElementById('seonav');
-  if(sn) sn.style.display = v==='seo' ? '' : 'none';
+  var sn = document.getElementById('seonav');
+  if(sn) sn.style.display = (v==='seo') ? '' : 'none';
 }
 
-function semFilter(val, btn){
-  document.querySelectorAll('.sem-btn').forEach(b=>b.classList.remove('on'));
+function semFilter(lang, btn){
+  document.querySelectorAll('.sem-btn').forEach(function(b){b.classList.remove('on');});
   btn.classList.add('on');
-  const rows = document.querySelectorAll('#semTable tbody tr');
-  rows.forEach(r=>{
-    let show = false;
-    if(val==='all') show=true;
-    else if(val==='ya') show = r.dataset.source==='ya';
-    else show = (r.dataset.lang===val || r.dataset.type===val || r.dataset.freq===val);
-    r.style.display = show ? '' : 'none';
+  document.querySelectorAll('#semTable tbody tr').forEach(function(r){
+    r.style.display = (lang==='all' || r.dataset.lang===lang) ? '' : 'none';
   });
 }
 
-const toolState = {};
-function toggleTool(id){
-  toolState[id] = !toolState[id];
-  const el = document.getElementById('s-'+id);
-  if(el){
-    el.innerHTML = toolState[id] ? '✅ Получен' : '❌ Не получен';
-    el.style.color = toolState[id] ? 'var(--good)' : 'var(--red)';
-    el.closest('tr').style.background = toolState[id] ? 'var(--goodbg)' : '';
+// Budget charts
+function initBudgetCharts(){
+  var pieCtx = document.getElementById('cBudgetPie');
+  if(pieCtx && !pieCtx._done){
+    pieCtx._done=true;
+    new Chart(pieCtx,{type:'doughnut',data:{
+      labels:['Ссылки статейные','Крауд-маркетинг','LiveSurf ORM','MegaIndex','Keys.so','Topvisor','xtool.ru'],
+      datasets:[{data:[20000,8000,4990,3500,4900,1500,500],
+        backgroundColor:['#0a3161','#1e8e5a','#c98a08','#b71414','#5c85b4','#7b5ea7','#bbb'],
+        borderWidth:2,borderColor:'#fff'}]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:12}}},cutout:'52%'}});
   }
-  updateToolsProgress();
-}
-function updateToolsProgress(){
-  let done = 0;
-  for(let i=1;i<=11;i++) if(toolState['t'+i]) done++;
-  const pct = Math.round(done/11*100);
-  const bar = document.getElementById('tools-bar');
-  const cnt = document.getElementById('tools-count');
-  const stat = document.getElementById('tools-done-stat');
-  if(bar) bar.style.width = pct+'%';
-  if(cnt) cnt.textContent = done;
-  if(stat) stat.textContent = done+'/11';
-}
-function resetTools(){
-  for(let i=1;i<=11;i++){
-    toolState['t'+i] = false;
-    const el = document.getElementById('s-t'+i);
-    if(el){ el.innerHTML='❌ Не получен'; el.style.color='var(--red)'; }
-    const row = el ? el.closest('tr') : null;
-    if(row) row.style.background='';
+  var roiCtx = document.getElementById('cBudgetRoi');
+  if(roiCtx && !roiCtx._done){
+    roiCtx._done=true;
+    new Chart(roiCtx,{type:'line',data:{
+      labels:['Сейчас','Мес 1','Мес 2','Мес 3','Мес 4','Мес 6','Мес 9','Мес 12'],
+      datasets:[
+        {label:'TF',data:[5,5,6,7,8,10,14,18],borderColor:'#0a3161',tension:.4,fill:false,pointRadius:4},
+        {label:'Негатив в ТОП-10',data:[4,4,3,3,2,2,1,1],borderColor:'#b71414',tension:.4,fill:false,pointRadius:4},
+        {label:'EN-позиции Google',data:[0,0,0,3,5,7,8,9],borderColor:'#1e8e5a',tension:.4,fill:false,pointRadius:4}
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11},boxWidth:12}}},scales:{y:{beginAtZero:true,max:20}}}});
   }
-  updateToolsProgress();
 }
+document.getElementById('tabBudget').addEventListener('click',function(){setTimeout(initBudgetCharts,100);});
 
-const SEM_DATA = [
-  ["🇷🇺 RU — Главная","migrator.me/","RU","иммиграция в США","Коммерческий","Высокая","⭐⭐⭐","Главный RU-запрос","sem"],
-  ["🇷🇺 RU — Главная","migrator.me/","RU","переезд в США","Коммерческий","Высокая","⭐⭐⭐","","sem"],
-  ["🇷🇺 RU — Главная","migrator.me/","RU","эмиграция в США","Коммерческий","Высокая","⭐⭐⭐","","sem"],
-  ["🇷🇺 RU — Главная","migrator.me/","RU","как переехать в США","Информационный","Высокая","⭐⭐","","sem"],
-  ["🇷🇺 RU — Виза O-1","migrator.me/visao1ru","RU","виза О-1 США","Коммерческий","Высокая","⭐⭐⭐","","sem"],
-  ["🇷🇺 RU — Виза O-1","migrator.me/visao1ru","RU","виза талантов США","Коммерческий","Средняя","⭐⭐⭐","","sem"],
-  ["🇺🇸 EN — Главная","migrator.me/","EN","immigration to USA","Коммерческий","Высокая","⭐⭐⭐","Главный EN-запрос","sem"],
-  ["🇺🇸 EN — Главная","migrator.me/","EN","US immigration company","Коммерческий","Средняя","⭐⭐⭐","","sem"],
-  ["🇺🇸 EN — Главная","migrator.me/","EN","immigration services USA","Коммерческий","Высокая","⭐⭐⭐","","sem"],
-  ["🇺🇸 EN — Visa O-1","migrator.me/visao1","EN","O-1 visa USA","Коммерческий","Высокая","⭐⭐⭐","","sem"],
-  ["🇺🇸 EN — Visa O-1","migrator.me/visao1","EN","O-1 visa requirements","Информационный","Высокая","⭐⭐","","sem"],
-  ["🇷🇺 RU — Трафик","migrator.me/","RU","сша внж","Коммерческий","Высокая","⭐⭐⭐","ТОП-1 Яндекс","ya"],
-  ["🇷🇺 RU — Трафик","migrator.me/","RU","профессии востребованные в сша","Информационный","Высокая","⭐⭐","ТОП-1 Яндекс","ya"],
-  ["🇷🇺 RU — Трафик","migrator.me/","RU","иммиграционные визы сша","Коммерческий","Высокая","⭐⭐⭐","ТОП-5 Яндекс","ya"],
-];
-function typeClass(t){
-  if(t==='Коммерческий') return 'b-navy';
-  if(t==='Информационный') return 'b-warn';
-  if(t==='Транзакционный') return 'b-good';
-  return 'b-red';
-}
-function freqClass(f){
-  if(f==='Высокая') return 'b-good';
-  if(f==='Средняя') return 'b-warn';
-  return 'b-navy';
-}
-function langTag(l){return `<span class="lang-${l.toLowerCase()}">${l}</span>`;}
-function renderSem(data){
-  const tb = document.getElementById('semBody');
-  if(!tb) return;
-  tb.innerHTML = data.map(r => {
-    const [grp,url,lang,kw,type,freq,prio,note,src] = r;
-    const ya = src==='ya';
-    const rowBg = ya ? 'background:#f0f7ff' : '';
-    const srcBadge = ya
-      ? '<span class="badge b-good" style="font-size:10px">📊 Яндекс факт</span>'
-      : '<span class="badge" style="background:#eee;color:#666;font-size:10px">✍️ ядро</span>';
-    return `<tr style="${rowBg}" data-lang="${lang}" data-type="${type}" data-source="${src}">
-      <td>${grp}</td><td><code style="font-size:10px">${url}</code></td>
-      <td>${langTag(lang)}</td><td><b>${kw}</b></td>
-      <td><span class="badge ${typeClass(type)}">${type}</span></td>
-      <td><span class="badge ${freqClass(freq)}">${freq}</span></td>
-      <td>${prio}</td><td style="color:var(--grey);font-size:11px">${note}</td>
-      <td>${srcBadge}</td></tr>`;
-  }).join('');
-}
-function initSem(){ renderSem(SEM_DATA); }
-
-window.addEventListener('DOMContentLoaded', ()=>{
-  const cSitemap = document.getElementById('cSitemap');
-  if(cSitemap) new Chart(cSitemap, {type:'doughnut', data:{
-    labels:['Контентные (31)','Лендинги varlamov* (31)','Thank-you/формы (17)','Лендинги kats* (13)','Прочие орфаны (88)'],
-    datasets:[{data:[31,31,17,13,88], backgroundColor:['#1e8e5a','#b71414','#c98a08','#e05555','#8899aa']}]
-  }, options:{plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},responsive:true,maintainAspectRatio:false}});
-
-  const cIndex = document.getElementById('cIndex');
-  if(cIndex) new Chart(cIndex, {type:'bar', data:{
-    labels:['Sitemap.xml','Перелинковка','Яндекс индекс'],
-    datasets:[{label:'URL',data:[180,31,581], backgroundColor:['#c98a08','#1e8e5a','#b71414']}]
-  }, options:{plugins:{legend:{display:false}},responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
-
-  const cOnpage = document.getElementById('cOnpage');
-  if(cOnpage) new Chart(cOnpage, {type:'bar', data:{
-    labels:['Без H1','Без H2','Title >60','Descr >160','HTML >500КБ','Ответ >1с'],
-    datasets:[{label:'Страниц',data:[19,31,20,13,20,15], backgroundColor:'#b71414'}]
-  }, options:{indexAxis:'y',plugins:{legend:{display:false}},responsive:true,maintainAspectRatio:false,scales:{x:{max:31,beginAtZero:true}}}});
-
-  const cWeight = document.getElementById('cWeight');
-  if(cWeight) new Chart(cWeight, {type:'bar', data:{
-    labels:['/otzyvy','/tg','/ebru','/','/visao1ru','/eb1a-*','/news'],
-    datasets:[{label:'КБ',data:[1140,960,840,720,680,520,480], backgroundColor:'#b71414'}]
-  }, options:{plugins:{legend:{display:false}},responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
-
-  const cSpeed = document.getElementById('cSpeed');
-  if(cSpeed) new Chart(cSpeed, {type:'bar', data:{
-    labels:['<0.5с','0.5–1с','1–1.5с','>1.5с'],
-    datasets:[{label:'Страниц',data:[4,12,10,5], backgroundColor:['#1e8e5a','#c98a08','#b71414','#8c1010']}]
-  }, options:{plugins:{legend:{display:false}},responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
-
-  const cLinks = document.getElementById('cLinks');
-  if(cLinks) new Chart(cLinks, {type:'bar', data:{
-    labels:['1–3 inlinks','4–10 inlinks','11–30 inlinks','>30 inlinks'],
-    datasets:[{label:'Страниц',data:[16,8,5,2], backgroundColor:['#b71414','#c98a08','#1e8e5a','#0a3161']}]
-  }, options:{plugins:{legend:{display:false}},responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true}}}});
-
-  const cLang = document.getElementById('cLang');
-  if(cLang) new Chart(cLang, {type:'doughnut', data:{
-    labels:['RU (90.7%)','EN (6.1%)','Other (3.2%)'],
-    datasets:[{data:[90.7,6.1,3.2], backgroundColor:['#0a3161','#1e8e5a','#c98a08']}]
-  }, options:{p
+// Show stages on load
+document.addEventListener('DOMContentLoaded', function(){
+  showView('stages');
+});
+</script>
+</body>
+</html>
