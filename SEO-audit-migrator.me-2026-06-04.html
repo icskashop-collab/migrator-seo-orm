@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO-аудит migrator.me — 04.06.2026</title>
+<style>
+  :root{--ink:#1a2230;--mut:#5b6678;--line:#dde3ec;--acc:#1f6fb2;--bg2:#f4f7fb;
+        --red:#c0392b;--yel:#b07d10;--grn:#1e8e5a;--redbg:#fbeae8;--yelbg:#fdf6e3;--grnbg:#e9f7f0}
+  *{box-sizing:border-box}
+  body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);margin:0;background:#fff;line-height:1.55;font-size:15px}
+  .page{max-width:960px;margin:0 auto;padding:48px 40px}
+  h1{font-size:30px;margin:0 0 6px}
+  h2{font-size:21px;margin:44px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+  h3{font-size:16px;margin:26px 0 8px;color:var(--acc)}
+  h4{font-size:14px;margin:18px 0 6px}
+  p{margin:8px 0}
+  .sub{color:var(--mut);font-size:14px}
+  .meta-block{background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:14px 18px;margin:22px 0;font-size:13.5px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0;font-family:'Segoe UI',Arial,sans-serif}
+  th{background:var(--ink);color:#fff;text-align:left;padding:8px 10px;font-weight:600;font-size:12.5px}
+  td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:#fafbfd}
+  .crit{color:var(--red);font-weight:700}.mid{color:var(--yel);font-weight:700}.low{color:var(--grn);font-weight:700}
+  .tag{display:inline-block;padding:1px 9px;border-radius:12px;font-size:11.5px;font-weight:700;font-family:'Segoe UI',Arial,sans-serif;white-space:nowrap}
+  .t-red{background:var(--redbg);color:var(--red)}.t-yel{background:var(--yelbg);color:var(--yel)}.t-grn{background:var(--grnbg);color:var(--grn)}
+  .good,.bad,.fix{border-left:4px solid;padding:10px 16px;margin:10px 0;border-radius:0 6px 6px 0;font-size:14px}
+  .good{border-color:var(--grn);background:var(--grnbg)}
+  .bad{border-color:var(--red);background:var(--redbg)}
+  .fix{border-color:var(--acc);background:#eaf2fa}
+  .good b:first-child,.bad b:first-child,.fix b:first-child{display:block;margin-bottom:4px;font-family:'Segoe UI',Arial,sans-serif;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+  code{font-family:Consolas,monospace;font-size:12.5px;background:var(--bg2);padding:1px 5px;border-radius:3px}
+  ul{margin:6px 0 10px;padding-left:22px}
+  li{margin:4px 0}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0}
+  .kpi{border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--bg2)}
+  .kpi .n{font-size:22px;font-weight:700;font-family:'Segoe UI',Arial,sans-serif}
+  .kpi .l{font-size:11.5px;color:var(--mut);font-family:'Segoe UI',Arial,sans-serif}
+  .score{font-size:42px;font-weight:700;color:var(--acc);font-family:'Segoe UI',Arial,sans-serif}
+  footer{margin-top:50px;border-top:1px solid var(--line);padding-top:14px;color:var(--mut);font-size:12px}
+  .nb{font-size:12.5px;color:var(--mut);font-style:italic}
+  @media print{.page{padding:20px}h2{page-break-after:avoid}.good,.bad,.fix{page-break-inside:avoid}table{page-break-inside:auto}tr{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>SEO-аудит сайта migrator.me</h1>
+<p class="sub">Полный технический, контентный и GEO/AEO-аудит · Дата: 4 июня 2026 · Платформа сайта: Tilda Publishing</p>
+
+<div class="meta-block">
+<b>Источники данных:</b> (1) бэкап сайта (HTTrack, 04.06.2026, 38 HTML-файлов); (2) краулинг Screaming Frog <code>internal_all.xlsx</code> (31 URL); (3) машинные данные <code>migrator_me_seo_data.json</code> (xtool.ru, 04.06.2026 14:37); (4) дашборд <code>migrator_me_seo_dashboard.html</code>; (5) PDF-отчёт xtool.ru (6 стр.); (6) живой сайт — robots.txt, sitemap.xml (180 URL), выборочная проверка страниц 04.06.2026. Все цифры в отчёте взяты из этих источников; где данных нет — указано явно.
+</div>
+
+<h2>1. Executive Summary</h2>
+
+<table style="width:auto">
+<tr><td style="border:none;padding-right:24px"><div class="score">4.3 / 10</div><div class="sub" style="font-family:'Segoe UI',Arial,sans-serif">Общая SEO-зрелость</div></td>
+<td style="border:none">Базовая гигиена основных страниц в порядке (200-коды, уникальные Title/Description, самоканоникалы, корректный robots.txt). Но сайт системно теряет видимость из-за <b>раздутого индекса рекламными лендингами</b>, <b>полного отсутствия hreflang при 4 языковых версиях</b>, <b>отсутствия микроразметки</b> и <b>сверхтяжёлых страниц</b>. Ссылочный профиль слабый (Trust Flow 5), Google-направление фактически не развивается.</td></tr>
+</table>
+
+<h3>Семь ключевых выводов</h3>
+<ul>
+<li><b>Индекс раздут в ~18 раз относительно полезного контента.</b> В sitemap.xml — 180 URL, в индексе Яндекса — 581 страница, при этом внутренней перелинковкой связан только 31 URL. Остальные ~150 URL из sitemap — рекламные лендинги под блогеров (31 вариант <code>varlamov*</code>, 13 <code>kats*</code>, 5 <code>kolezev*</code> и др.), thank-you страницы (<code>/thanks</code>, <code>/gracias</code>, <code>/rthenks</code>), формы и опросы (<code>/formpost</code>, <code>/opros</code>), технические страницы (<code>/page116756016.html</code>). Все проверенные — индексируемые, без noindex, с одинаковым Title «Иммиграция в США!» и одинаковым Description. Это классический index bloat + массовые дубли, размывающие краулинговый бюджет и качество домена.</li>
+<li><b>hreflang отсутствует полностью</b> — при наличии EN/RU/ES/FR версий главной, страниц виз и asylum-страниц (<code>/political*</code>). Поисковики не понимают связь языковых версий; в выдаче конкурируют между собой и показываются не той аудитории. Для международного проекта это критично.</li>
+<li><b>Структурированных данных нет вообще:</b> 0 блоков JSON-LD на всех 38 страницах бэкапа и на проверенных живых страницах. Нет Organization, Service, FAQPage, BreadcrumbList, Review. Это прямые потери rich-сниппетов и цитируемości в AI-поиске (GEO/AEO).</li>
+<li><b>19 из 31 страниц без H1, 31 из 31 без H2</b> (Screaming Frog; подтверждено бэкапом — Tilda выводит заголовки стилизованными div). Внешний аудит xtool оценил оптимизацию заголовков H1–H6 главной в 0%. Семантическая структура страниц для поисковиков и LLM практически отсутствует.</li>
+<li><b>Страницы аномально тяжёлые и медленные:</b> средний размер только HTML — 478 КБ, у 20 из 31 страниц HTML больше 500 КБ, максимум — 1,14 МБ (<code>/otzyvy</code>). 15 из 31 страниц отвечают дольше 1 с (макс. 1,93 с). Доля текста в HTML меньше 2% на 16 страницах. Протокол — HTTP/1.1.</li>
+<li><b>Ссылочный профиль слабый и монотонный</b> (xtool/Majestic): траст XT 2,34/10 и снижается; Trust Flow 5 при Citation Flow 18 (соотношение 0,28); всего 47 ссылающихся доменов на 567 ссылок (~12 ссылок с домена); 90,7% доноров русскоязычные; 0 ссылок с EDU/GOV.</li>
+<li><b>Яндекс-направление живо, Google — нет.</b> ИКС 130 (+10), по Яндексу есть ТОП-1 по запросам «сша внж» (~816 переходов/мес по оценке xtool), «профессии востребованные в сша» и др., ~116 переходов/сутки. По Google переходы не фиксируются (нет данных), при том что в индексе Google ~540 страниц. Англоязычная стратегия фактически не работает.</li>
+</ul>
+
+<h2>2. Сводная таблица проблем с приоритизацией</h2>
+
+<table>
+<tr><th style="width:26%">Проблема</th><th>Критичность</th><th>Влияние на трафик</th><th>Сложность</th><th style="width:38%">Рекомендация</th></tr>
+<tr><td>~150 рекламных лендингов и служебных страниц в sitemap и индексе, с дублями Title/Description</td><td><span class="tag t-red">🔴 критично</span></td><td>Высокое: размытие краулингового бюджета, каннибализация, понижение качества домена</td><td>Низкая</td><td>Поставить <code>noindex</code> на все promo/thank-you/form/опросные страницы (в Tilda: Настройки страницы → SEO → запретить индексацию), убрать их из sitemap. Целевой индекс — 30–40 контентных URL.</td></tr>
+<tr><td>Нет hreflang между EN/RU/ES/FR версиями</td><td><span class="tag t-red">🔴 критично</span></td><td>Высокое: неверный таргетинг языковых версий, каннибализация в выдаче</td><td>Средняя</td><td>Связать кластеры (/, /tg, /esp, /fr; /eb, /ebru, /ebesp, /ebfr; /visao1*; /political*) тегами <code>hreflang</code> + <code>x-default</code> через «HTML-код в head» в Tilda или через T-блок.</td></tr>
+<tr><td>0 микроразметки (JSON-LD) на всём сайте</td><td><span class="tag t-red">🔴 критично</span></td><td>Высокое: нет rich-сниппетов, слабая видимость в AI-поиске</td><td>Низкая</td><td>Добавить JSON-LD: Organization (+sameAs соцсети), Service, FAQPage на страницы виз, Review/AggregateRating на /otzyvy, Article на кейсы, BreadcrumbList.</td></tr>
+<tr><td>19/31 страниц без H1, 0 страниц с H2; заголовки — стилизованные div</td><td><span class="tag t-red">🔴 критично</span></td><td>Высокое: релевантность страниц и понимание структуры LLM/поисковиками</td><td>Средняя</td><td>В Tilda задать заголовкам тип H1/H2/H3 (настройки блока → типографика). На каждой странице ровно один H1 с ключом, H2 для секций.</td></tr>
+<tr><td>HTML-страницы по 0,5–1,1 МБ, ответы сервера до 1,9 с, текст &lt;2% кода</td><td><span class="tag t-yel">🟡 средне</span></td><td>Среднее-высокое: Core Web Vitals, мобильная выдача, конверсия</td><td>Средняя</td><td>Сократить число блоков/виджетов Tilda, ленивые видео (фасады для YouTube), сжать изображения, убрать неиспользуемые попапы. Цель: HTML &lt;200 КБ, ответ &lt;0,5 с.</td></tr>
+<tr><td>Слабый ссылочный профиль: TF 5, 47 доменов, 90,7% RU-доноров, траст падает</td><td><span class="tag t-yel">🟡 средне</span></td><td>Высокое (долгосрочно): потолок ранжирования в обеих ПС</td><td>Высокая</td><td>Линкбилдинг: равномерный прирост тематических доменов (иммиграция, право, релокация), гостевые посты на EN-ресурсах, каталоги юруслуг США, цифровой PR на кейсах.</td></tr>
+<tr><td>Кейсы (16 страниц) получают по 3 внутренних ссылки, доступны только через JS-ленту Tilda</td><td><span class="tag t-yel">🟡 средне</span></td><td>Среднее: глубина 3, слабый внутренний вес самого конверсионного контента</td><td>Низкая</td><td>Добавить статичные HTML-блоки «Кейсы» на главную и страницы виз со ссылками на 3–4 релевантных кейса; перелинковка кейс↔виза.</td></tr>
+<tr><td>Орфанные сервисные страницы: /political, /politicalru, /politicalesp, /politicalfr не связаны навигацией</td><td><span class="tag t-yel">🟡 средне</span></td><td>Среднее: страницы услуги не получают внутренний вес</td><td>Низкая</td><td>Добавить «Political asylum» в меню и блок услуг на главных всех языков (если услуга актуальна; иначе — noindex).</td></tr>
+<tr><td>Переспам длины метатегов: 20/31 Title &gt;60 зн., 13/31 Description &gt;160 зн.</td><td><span class="tag t-yel">🟡 средне</span></td><td>Среднее: обрезка в SERP, снижение CTR</td><td>Низкая</td><td>Переписать: Title 50–60 зн. с ключом в начале, Description 140–160 зн. с CTA. Полный дубль Description у 2 кейсов (Ilya CEO / Vladimir tech) — переписать.</td></tr>
+<tr><td>Нет атрибута lang у &lt;html&gt; ни на одной странице</td><td><span class="tag t-yel">🟡 средне</span></td><td>Среднее: определение языка, доступность, LLM-парсинг</td><td>Низкая</td><td>Прописать <code>lang="en"/"ru"/"es"/"fr"</code> per page (Tilda: настройки сайта/страницы).</td></tr>
+<tr><td>Тонкий контент: /news 343 слова, /otzyvy 495 слов</td><td><span class="tag t-yel">🟡 средне</span></td><td>Среднее: слабые хабы при высоком коммерческом потенциале</td><td>Средняя</td><td>Превратить /news в полноценный блог с регулярными материалами (сейчас скорость переиндексации Яндексом — 0,29 стр./сутки), /otzyvy дополнить текстовыми резюме отзывов.</td></tr>
+<tr><td>Битые/странные ссылки лицензий юристов: <code>tg://search_hashtag</code>, <code>denied:about:blank</code>; опечатки («wE WORK», «LICENCE»)</td><td><span class="tag t-yel">🟡 средне</span></td><td>Низкое на трафик, высокое на доверие/E-E-A-T и конверсию</td><td>Низкая</td><td>Ссылки номеров лицензий вести на официальные реестры (WSBA bar directory и т.п.), вычитать тексты.</td></tr>
+<tr><td>Нет Twitter Cards; og:url на главной без слэша, og:image — «Screenshot_-_2025-06.png»</td><td><span class="tag t-grn">🟢 низко</span></td><td>Низкое: внешний вид шеринга</td><td>Низкая</td><td>Добавить twitter:card=summary_large_image, поставить брендированную OG-картинку 1200×630.</td></tr>
+<tr><td>Meta keywords на 3 страницах (устаревший тег)</td><td><span class="tag t-grn">🟢 низко</span></td><td>Нулевое</td><td>Низкая</td><td>Удалить, чтобы не отдавать семантику конкурентам.</td></tr>
+<tr><td>HTTP/1.1 вместо HTTP/2+ (по данным краулинга)</td><td><span class="tag t-grn">🟢 низко</span></td><td>Низкое-среднее: скорость загрузки множества ресурсов</td><td>Зависит от Tilda</td><td>Проверить отдачу по HTTP/2 (ограничение платформы Tilda; при переезде на свой стек — обязательный пункт).</td></tr>
+</table>
+
+<h2>3. Детальный разбор</h2>
+
+<h3>3.1 Техническое SEO</h3>
+
+<div class="good"><b>Что хорошо</b>
+Все 31 краулящихся URL отдают 200, редиректных цепочек и циклов внутри сайта нет, 4xx/5xx — 0 (Screaming Frog). HTTPS работает, www → non-www редирект на месте (проверено 04.06.2026). robots.txt корректен: закрыты служебные пути Tilda (<code>/tilda/form*</code>, <code>/tilda/rec*</code> и др.), есть <code>Clean-param: etext&amp;gbraid&amp;brid</code> для рекламных меток и ссылки на оба sitemap. Канониклы — самоссылающиеся на 100% страниц, конфликтов нет. ЧПУ у кейсов читаемые (<code>/eb1a-sergey-media-editor</code>). Санкций Яндекса нет, вероятность фильтра — 0% (xtool).</div>
+
+<div class="bad"><b>Что плохо</b>
+<ul style="margin:0">
+<li><b>Index bloat.</b> sitemap.xml содержит 180 URL, из них ~150 — не связанные перелинковкой promo-лендинги, thank-you и формы. Проверка живых страниц (<code>/varlamov31</code>, <code>/kats18</code>, <code>/varlamov25</code>, <code>/thanks</code>): все 200, индексируемые, без noindex, с self-canonical. В индексе Яндекса 581 страница, Google ~540 — поисковики тратят бюджет на мусор, а «качество домена» считается по сотне одинаковых страниц.</li>
+<li><b>hreflang отсутствует</b> на всех страницах (0 упоминаний в 38 файлах бэкапа). Языковые версии связаны только видимым переключателем.</li>
+<li><b>Вес страниц.</b> Средний HTML — 478 КБ (без ресурсов!), 20 страниц &gt;500 КБ, <code>/otzyvy</code> — 1 138 КБ. Среднее время ответа 0,99 с, у 15 страниц &gt;1 с, максимум 1,93 с (<code>/visao1</code>). Это до загрузки CSS/JS/изображений Tilda — LCP и INP на мобильных почти гарантированно вне «зелёной зоны». <span class="nb">Полевые данные CWV (CrUX) недоступны ни в одном из источников — требуется проверка в PageSpeed Insights/Search Console; отмечено как пробел данных.</span></li>
+<li><b>HTTP/1.1</b> на всех URL (колонка HTTP Version краулинга) — десятки ресурсов Tilda CDN грузятся без мультиплексирования.</li>
+<li><b>Sitemap не соответствует реальной структуре:</b> в нём есть технические URL (<code>/page115964576.html</code>, <code>/page116387006.html</code>, <code>/page116756016.html</code>, <code>/page117321176.html</code>, <code>/preview</code>), которых не должно быть в принципе.</li>
+<li><b>Глубина и доступность контента:</b> кейсы лежат на глубине 3 клика и подгружаются JS-лентой Tilda — в статичном HTML страницы /news ссылок на кейсы нет (проверено по бэкапу). Краулеры без рендеринга JS их не увидят.</li>
+</ul></div>
+
+<div class="fix"><b>Как исправить</b>
+1) В Tilda массово закрыть от индексации все лендинги под трафик блогеров, thank-you, формы, опросы; пересобрать sitemap только из контентных URL. 2) Внедрить hreflang-кластеры (см. 3.4). 3) Аудит блоков Tilda на самых тяжёлых страницах: убрать дублирующиеся попапы (на главной форма-анкета продублирована дважды), включить lazy-load видео через фасады, конвертировать изображения в WebP (через настройки Tilda «оптимизация изображений»). 4) Запросить у Tilda поддержку HTTP/2 / проверить текущую отдачу с CDN. 5) Снять CWV в Search Console и PSI как базовую точку.</div>
+
+<h3>3.2 On-page SEO</h3>
+
+<div class="good"><b>Что хорошо</b>
+На 31 основном URL: 0 пустых Title, 0 пустых Description, 0 дублей Title. Метатеги кейсов написаны осмысленно, с брендом и сутью кейса. Главная: Title «Immigration to the USA legally | Migrator» (41 зн.), внятный Description с CTA. Контент кейсов объёмный — 1 271–1 918 слов. Читабельность нормальная (Flesch 57–64 для EN-страниц).</div>
+
+<div class="bad"><b>Что плохо</b>
+<ul style="margin:0">
+<li><b>H1 нет на 19 из 31 страниц</b> (все 16 кейсов, /news, /otzyvy, /pp); <b>H2 нет ни на одной</b> — заголовки свёрстаны div-ами. xtool: оптимизация H1–H6 главной = 0%, в заголовках отсутствуют слова «immigration, usa, legally» из Title.</li>
+<li><b>Длина метатегов:</b> 20/31 Title длиннее 60 знаков (до 109 зн. — кейс архитектора), 13/31 Description длиннее 160 знаков (до 199 зн.) — обрезаются в выдаче.</li>
+<li><b>Полный дубль Description</b> у пары кейсов <code>eb1a-ilya-automotive-ceo</code> и <code>eb1a-vladimir-tech-entrepreneur</code> (описание Vladimir скопировано в кейс Ilya, текст не соответствует содержанию).</li>
+<li><b>Дубли на лендингах:</b> все проверенные blogger-лендинги имеют одинаковый Title «Иммиграция в США!» и одинаковый Description — десятки страниц-клонов (вне зоны видимости Screaming Frog, т.к. орфаны).</li>
+<li><b>Тонкий контент:</b> /news — 343 слова, /otzyvy — 495 слов. Доля текста &lt;2% HTML на 16 страницах (балласт кода).</li>
+<li><b>Alt-атрибуты:</b> на контентных страницах большинство «настоящих» img имеют alt, но на главной 6 из 6, на /tg 8 из 16, на /esp и /fr по 6 из 11 изображений без alt (бэкап). Значительная часть графики — фоновые div Tilda, вообще невидимые для image-поиска.</li>
+<li><b>xtool, релевантность главной</b> по фразе из Title: текст 38%, ссылки 13%, текст+ссылки 33% — ключи почти не поддержаны анкорами внутренних ссылок.</li>
+<li>Устаревший meta keywords на 3 страницах.</li>
+</ul></div>
+
+<div class="fix"><b>Как исправить</b>
+1) Пройтись по всем страницам в Tilda и назначить семантические H1/H2/H3. 2) Переписать 20 длинных Title (ключ в первые 50 зн.) и 13 Description; устранить дубль у кейса Ilya CEO. 3) Расширить /news (хаб с анонсами + регулярные статьи) и /otzyvy (текстовые версии видеоотзывов — это и контент, и доступность). 4) Заполнить alt у всех значимых изображений (фото юристов — «Olga Prygoda — US immigration attorney…»). 5) Удалить meta keywords.</div>
+
+<h3>3.3 Микроразметка и структурированные данные</h3>
+
+<div class="good"><b>Что хорошо</b>
+Open Graph присутствует на всех основных страницах (og:title, og:description, og:image, og:type, og:url). Есть favicon (light/dark), apple-touch-icon, верификации Яндекс/Google.</div>
+
+<div class="bad"><b>Что плохо</b>
+JSON-LD — 0 блоков на всех 38 страницах бэкапа и проверенных живых страницах. Нет Organization, Service, FAQPage, Review/AggregateRating, Article, BreadcrumbList. Twitter Cards — 0. og:image главной — файл «Screenshot_-_2025-06.png» (скриншот вместо брендированной обложки). При 16 детальных кейсах и видеоотзывах сайт не размечает ничего — поисковики и LLM получают только сырой текст в тяжёлом коде.</div>
+
+<div class="fix"><b>Как исправить</b>
+Через «HTML-код в head» в Tilda добавить: на все страницы — <code>Organization</code> (name, url, logo, sameAs: YouTube/Instagram/Telegram/TikTok, contactPoint с телефоном +1-323-283-87-76, address); на страницы виз — <code>Service</code> + <code>FAQPage</code> (см. 3.6); на кейсы — <code>Article</code> с datePublished/author; на /otzyvy — <code>VideoObject</code> для видеоотзывов; везде — <code>BreadcrumbList</code>. Заменить og:image, добавить twitter:card. Валидация: Rich Results Test + Яндекс Вебмастер.</div>
+
+<h3>3.4 Структура сайта, hreflang и внутренняя перелинковка</h3>
+
+<div class="good"><b>Что хорошо</b>
+Ядро структуры логично: главная (74 inlinks) → страницы виз (EB, O-1, по языкам) → кейсы. Главная связана со всеми хабами, глубина основных коммерческих страниц — 1 клик. ЧПУ кейсов человекочитаемые. /pp (privacy) корректно прилинкована отовсюду (62 inlinks).</div>
+
+<div class="bad"><b>Что плохо</b>
+<ul style="margin:0">
+<li><b>hreflang-кластеры не размечены.</b> Фактические кластеры: главные (/ EN, /tg RU, /esp ES, /fr FR), EB-визы (/eb, /ebru, /ebesp, /ebfr), O-1 (/visao1, /visao1ru, /visao1esp, /visao1fr), asylum (/political, /politicalru, /politicalesp, /politicalfr). В sitemap есть даже /aimigratorportu (PT) — языков больше, чем кажется.</li>
+<li><b>16 кейсов и /visao1* получают всего по 3 внутренних ссылки</b>, кейсы — на глубине 3 и доступны только через JS-ленту. Самый убедительный контент сайта почти не получает внутреннего веса.</li>
+<li><b>Орфаны:</b> весь блок /political* (4 языка услуги «политическое убежище»), /whole_world, /migrator_reviews и ~150 promo-URL существуют вне перелинковки. Screaming Frog их не нашёл — это и есть определение orphan pages.</li>
+<li><b>Анкоры:</b> ссылки на визы с главной — «More →»; xtool фиксирует релевантность ссылок 13%, в анкорах отсутствуют «immigration, usa, legally». Несколько визуально похожих ссылок «/» с пустым анкором.</li>
+<li>Языковое меню непоследовательно: с /tg нет прямой ссылки на /esp-кейсы и наоборот; RU-кейсы не имеют языковых аналогов вовсе.</li>
+</ul></div>
+
+<div class="fix"><b>Как исправить</b>
+1) hreflang по кластерам + x-default на EN. 2) Статичные блоки «Наши кейсы» на главной и страницах виз (3–4 ссылки с информативными анкорами «Кейс EB-1A: журналист и главред», «EB-2 NIW для IT-разработчика»). 3) Перекрёстные ссылки кейс → страница соответствующей визы (сейчас кейсы ссылаются в основном на /ebru) и виза → кейсы. 4) Вернуть /political* в меню или закрыть от индексации. 5) Заменить «More →» на анкоры с ключами («EB visa for professionals», «O-1 talent visa»).</div>
+
+<h3>3.5 Контент, коммерческие факторы и E-E-A-T</h3>
+
+<div class="good"><b>Что хорошо</b>
+Сильная кейс-база: 16 подробных разборов (1,3–1,9 тыс. слов) с историей, стратегией, сроками, RFE/NOID — редкий для ниши уровень конкретики. Представлены юристы с именами, фото, опытом, номерами лицензий (WSBA #57879), членством в AILA. Есть видеоотзывы, цены «от $15 000», гарантия возврата в договоре, юридический адрес (TX), Delaware File Number 2604257 со ссылкой на официальный реестр, телефон, e-mail. Честные дисклеймеры в футере («не юрфирма», расшифровка «95%» и «2143 клиента»). Работают SERM-страницы (/migrator_scam, /migrator_scam_eng). Метрика и пиксели стоят (Яндекс.Метрика, Facebook Pixel).</div>
+
+<div class="bad"><b>Что плохо</b>
+<ul style="margin:0">
+<li><b>Подрыв доверия в деталях:</b> номер лицензии Elizaveta Krukova ссылается на <code>denied:about:blank</code>, Marianna Pavlyshyn — на <code>tg://search_hashtag?hashtag=5979026</code> (поиск хэштега в Telegram вместо реестра адвокатов). Капс-опечатки «wE WORK ONLY WITH VERIFIED SPECIALISTS», «LICENCE» (брит. вариант вперемешку с амер.). Один и тот же дисклеймер-бегунок повторён 4 раза подряд в коде главной.</li>
+<li>Блок Olga Prygoda прямо говорит, что она «не принимает новых клиентов» — первый юрист в списке демотивирует лида.</li>
+<li>Нет страницы «About us»/«Team» как отдельного E-E-A-T хаба; нет авторства у кейсов и новостей; нет дат публикации в видимой части.</li>
+<li>Отзывы не агрегированы на внешних площадках (Trustpilot/Google Business Profile не упомянуты) — /otzyvy только своя страница на 495 слов.</li>
+<li>/news пуст (343 слова): скорость переиндексации 0,29 стр./сутки по Яндексу — сайт выглядит «застывшим». ИКС-история показывает выход на плато; траст xt снижается с марта.</li>
+</ul></div>
+
+<div class="fix"><b>Как исправить</b>
+1) Починить ссылки лицензий на официальные реестры (WSBA lawyer directory, state bar lookup). 2) Вычитать все страницы (капс, опечатки, смешение licence/license). 3) Создать /about с историей компании, командой, реквизитами, прессой. 4) Добавить даты и авторов к кейсам/новостям. 5) Завести Google Business Profile и Trustpilot, выводить AggregateRating. 6) Контент-план: регулярные публикации в /news (изменения политики USCIS, разборы) — это поднимет и переиндексацию, и GEO-цитируемость.</div>
+
+<h3>3.6 GEO / AEO / видимость в LLM и AI-поиске</h3>
+
+<div class="good"><b>Что хорошо</b>
+Сырьё для AI-видимости отличное: уникальные первичные данные (16 реальных кейсов с цифрами, сроками, типами петиций, исходами RFE/NOID/отказов), факты о ценах, статистика одобрений. Тематика «O-1/EB-1A/EB-2 NIW для русскоязычных» — узкая ниша, где LLM мало кого могут цитировать.</div>
+
+<div class="bad"><b>Что плохо</b>
+<ul style="margin:0">
+<li>Контент технически почти нечитаем для retrieval: текст &lt;2% HTML на половине страниц, заголовков H1–H6 нет, FAQ-блоков с разметкой нет, JSON-LD нет, lang не указан. LLM-краулеры (GPTBot, ClaudeBot, PerplexityBot) парсят сырой HTML без выполнения JS — лента кейсов на /news для них пуста.</li>
+<li>Нет страниц, отвечающих на вопросы прямо: «Сколько стоит виза O-1?», «Сколько рассматривается EB-1A?», «O-1 vs EB-1A» — ответы разбросаны по лендингам в виде картинок и стилизованных блоков.</li>
+<li>robots.txt не определяет политику для AI-ботов (ни разрешений, ни запретов — по умолчанию доступ есть, но и приоритетов нет).</li>
+<li>Бренд почти не имеет независимых упоминаний (47 ссылающихся доменов, 0 EDU/GOV) — LLM нечем подтверждать сущность «Migrator».</li>
+</ul></div>
+
+<div class="fix"><b>Как исправить</b>
+1) На каждой странице визы — FAQ-секция из 5–8 вопросов с краткими фактологичными ответами (40–60 слов, цифры, сроки) + разметка FAQPage. 2) Переверстать ключевые факты из графики в текст: таблицы «стоимость / сроки / требования» обычным HTML — это то, что цитируют AI-обзоры. 3) Семантические заголовки (см. 3.2) — основа chunk-инга в RAG-системах. 4) Страница «O-1 vs EB-1A vs EB-2 NIW» со сравнительной таблицей — типовой AI-запрос ниши. 5) Наращивать сущность бренда: Wikipedia-grade источники недостижимы, но профильные каталоги, юр. директории, подкасты и YouTube-транскрипты дают LLM подтверждение существования компании. 6) Транскрибировать видеоотзывы в текст на /otzyvy.</div>
+
+<h3>3.7 Скорость и мобильная адаптивность</h3>
+<div class="good"><b>Что хорошо</b>
+Tilda отдаёт адаптивную вёрстку, viewport настроен, шрифт Inter с display=swap, dns-prefetch/preconnect для CDN есть. Часть CSS грузится с media="print" → onload (отложенная загрузка).</div>
+<div class="bad"><b>Что плохо</b>
+Вес HTML (до 1,1 МБ) и сотни DOM-узлов Tilda + 25–32 изображения на кейсах/отзывах + видеоembed-ы. Ответ сервера до 1,9 с. Лабораторных и полевых CWV-данных ни один источник не содержит — <span class="nb">LCP/CLS/INP не подтверждены измерениями, это пробел, который надо закрыть через Search Console</span>.</div>
+<div class="fix"><b>Как исправить</b>
+Снять PSI/CrUX базу; включить оптимизацию изображений Tilda (WebP, lazy); фасады YouTube; ревизия блоков «Zero Block» с дублированным контентом (4 повтора бегунка на главной); удалить вторую копию анкеты-попапа.</div>
+
+<h2>4. Подтверждённые цифры</h2>
+
+<h4>4.1 Из internal_all.xlsx (Screaming Frog, 31 URL основной структуры)</h4>
+<div class="kpi-grid">
+<div class="kpi"><div class="n">31</div><div class="l">URL в краулинге, все 200 OK</div></div>
+<div class="kpi"><div class="n">0</div><div class="l">4xx / 5xx / редиректов</div></div>
+<div class="kpi"><div class="n">0</div><div class="l">пустых или дублей Title</div></div>
+<div class="kpi"><div class="n">2</div><div class="l">URL с дублем Description</div></div>
+<div class="kpi"><div class="n">20 / 31</div><div class="l">Title длиннее 60 знаков</div></div>
+<div class="kpi"><div class="n">13 / 31</div><div class="l">Description длиннее 160 знаков</div></div>
+<div class="kpi"><div class="n">19 / 31</div><div class="l">страниц без H1</div></div>
+<div class="kpi"><div class="n">31 / 31</div><div class="l">страниц без H2</div></div>
+<div class="kpi"><div class="n">478 КБ</div><div class="l">средний размер HTML (макс. 1 138 КБ — /otzyvy)</div></div>
+<div class="kpi"><div class="n">20 / 31</div><div class="l">страниц с HTML &gt; 500 КБ</div></div>
+<div class="kpi"><div class="n">0,99 с</div><div class="l">среднее время ответа (15 страниц &gt;1 с; макс. 1,93 с)</div></div>
+<div class="kpi"><div class="n">16 / 31</div><div class="l">страниц с долей текста &lt;2% кода</div></div>
+<div class="kpi"><div class="n">16</div><div class="l">страниц с ≤3 внутренними ссылками</div></div>
+<div class="kpi"><div class="n">2</div><div class="l">страницы &lt;500 слов (/news — 343, /otzyvy — 495)</div></div>
+<div class="kpi"><div class="n">100%</div><div class="l">самоканоникалы, 0 конфликтов</div></div>
+<div class="kpi"><div class="n">HTTP/1.1</div><div class="l">протокол всех ответов</div></div>
+</div>
+<p class="nb">Глубина: 1 URL — глубина 0; 6 — глубина 1; 8 — глубина 2; 16 (все кейсы) — глубина 3. Meta robots / X-Robots-Tag не заданы нигде (индексация по умолчанию).</p>
+
+<h4>4.2 Из migrator_me_seo_data.json / дашборда / PDF (xtool.ru, 04.06.2026)</h4>
+<div class="kpi-grid">
+<div class="kpi"><div class="n">2,34 / 10</div><div class="l">траст XT (−0,05)</div></div>
+<div class="kpi"><div class="n">16,0%</div><div class="l">Link Spam</div></div>
+<div class="kpi"><div class="n">130</div><div class="l">ИКС Яндекса (+10)</div></div>
+<div class="kpi"><div class="n">0,66</div><div class="l">xPR (−0,08)</div></div>
+<div class="kpi"><div class="n">5 / 18</div><div class="l">Trust Flow / Citation Flow (0,28)</div></div>
+<div class="kpi"><div class="n">567</div><div class="l">бэклинков всего</div></div>
+<div class="kpi"><div class="n">47</div><div class="l">ссылающихся доменов (36 IP / 35 подсетей)</div></div>
+<div class="kpi"><div class="n">51%</div><div class="l">follow-ссылки (24 домена)</div></div>
+<div class="kpi"><div class="n">94%</div><div class="l">HTTPS-доноры (44)</div></div>
+<div class="kpi"><div class="n">6%</div><div class="l">ссылки с главных страниц (3)</div></div>
+<div class="kpi"><div class="n">0 / 0</div><div class="l">EDU / GOV ссылки</div></div>
+<div class="kpi"><div class="n">90,66%</div><div class="l">русскоязычные доноры (EN — 6,73%)</div></div>
+<div class="kpi"><div class="n">581</div><div class="l">страниц в индексе Яндекса</div></div>
+<div class="kpi"><div class="n">0,29</div><div class="l">стр./сутки — скорость обновления в Яндексе</div></div>
+<div class="kpi"><div class="n">116</div><div class="l">переходов из Яндекса (Google — нет данных)</div></div>
+<div class="kpi"><div class="n">0%</div><div class="l">санкции/фильтры, OutSpam = 0</div></div>
+</div>
+<p class="nb">Внутренняя оптимизация главной (xtool, по словам из Title): текст — 38%, ссылки — 13%, текст+ссылки — 33%, заголовки H1–H6 — 0%. Видимость в Яндексе: «migrator» — ТОП-1; «сша внж» — ТОП-1 (оценка трафика 816/мес); «профессии востребованные в сша» — ТОП-1 (405/мес); десятки запросов в ТОП-10. InSpam 1,56 (−0,36). Тематика доноров: Business — 100%. Whois-данных нет.</p>
+
+<h4>4.3 Из sitemap.xml и живого сайта (04.06.2026)</h4>
+<div class="kpi-grid">
+<div class="kpi"><div class="n">180</div><div class="l">URL в sitemap.xml</div></div>
+<div class="kpi"><div class="n">~150</div><div class="l">URL sitemap вне внутренней перелинковки (орфаны)</div></div>
+<div class="kpi"><div class="n">31</div><div class="l">только promo-лендингов varlamov* в sitemap</div></div>
+<div class="kpi"><div class="n">13</div><div class="l">лендингов kats* (+5 kolezev*)</div></div>
+<div class="kpi"><div class="n">17</div><div class="l">thank-you/форм/опросов в sitemap (thanks, gracias, formpost, opros…)</div></div>
+<div class="kpi"><div class="n">4</div><div class="l">технических page*.html в sitemap</div></div>
+<div class="kpi"><div class="n">0</div><div class="l">noindex на проверенных promo-страницах</div></div>
+<div class="kpi"><div class="n">0</div><div class="l">JSON-LD / hreflang / Twitter Cards на всём сайте</div></div>
+</div>
+<p class="nb">Бэкап (38 HTML): атрибут lang отсутствует на всех контентных страницах; OG — на всех основных; изображений без alt: главная 6/6, /tg 8/16, /esp и /fr по 6/11. Шесть файлов 404 в бэкапе (<code>e, n, n-2, o, t, t-2</code>) — артефакт HTTrack (ложные URL из fbevents.js), реальных битых внутренних ссылок нет.</p>
+
+<h2>5. Сопоставление источников: что подтвердилось, что нет</h2>
+<table>
+<tr><th>Утверждение источника</th><th>Вердикт</th><th>Комментарий</th></tr>
+<tr><td>PDF/JSON/дашборд: низкий траст 2,34, TF/CF 0,28, мало доменов-доноров</td><td><span class="tag t-grn">Подтверждено</span></td><td>Все три источника — один срез xtool от 04.06.2026, цифры идентичны. Это сторонняя метрика, но направление (слабое ссылочное) подтверждается структурой: 47 доменов / 567 ссылок.</td></tr>
+<tr><td>Дашборд: «чистый профиль без санкций» как сильная сторона</td><td><span class="tag t-grn">Подтверждено</span></td><td>Санкции Яндекса не обнаружены, OutSpam 0. Корректно.</td></tr>
+<tr><td>Дашборд: «ИКС растёт +10 — позитивный сигнал»</td><td><span class="tag t-yel">Частично</span></td><td>Формально верно, но PDF-график показывает плато ИКС с апреля и снижение XT с марта — тренд ухудшается, дашборд это сглаживает.</td></tr>
+<tr><td>Screaming Frog: 0 ошибок 4xx, 0 дублей Title — «всё чисто»</td><td><span class="tag t-yel">Вводит в заблуждение</span></td><td>SF видел только 31 связанный URL. Главная проблема сайта (150 орфанных клонов-лендингов с дублями Title) лежит вне его охвата. Для инвентаризации доверять sitemap + индексу, для on-page — SF.</td></tr>
+<tr><td>Бэкап: 6 страниц 404 (/e, /n, /o, /t…)</td><td><span class="tag t-grn">Опровергнуто как проблема</span></td><td>Лог HTTrack: URL извлечены парсером из кода Facebook Pixel (fbevents.js). Реальных внутренних 404 нет — SF это подтверждает.</td></tr>
+<tr><td>xtool: индексация Яндекса 581 стр., Google ~540 (график)</td><td><span class="tag t-grn">Подтверждено и объяснено</span></td><td>Раздутие индекса соответствует 180 URL sitemap + параметрическим/архивным страницам. Это не «хорошая индексация», а bloat.</td></tr>
+<tr><td>xtool: оптимизация заголовков H1–H6 = 0%</td><td><span class="tag t-grn">Подтверждено</span></td><td>Независимо подтверждено бэкапом и SF: H1 без ключей/отсутствует, H2 нет нигде.</td></tr>
+<tr><td>JSON: переходы из Google — null</td><td><span class="tag t-yel">Пробел данных</span></td><td>«Нет данных» ≠ «нет трафика». Нужен Search Console. Но косвенно (90,7% RU-доноров, RU-видимость) Google-направление явно недоразвито.</td></tr>
+</table>
+<p><b>Что упустили все внешние источники:</b> index bloat лендингами (главная находка аудита), отсутствие hreflang, отсутствие микроразметки, вес страниц 0,5–1,1 МБ, орфанность /political*, JS-зависимость ленты кейсов, битые ссылки лицензий. <b>Что преувеличено:</b> дашборд подаёт ссылочную «чистоту» как ключевой актив — при TF 5 это скорее «нечего терять»; PDF-балл «Траст 2,34» сам по себе не является фактором ранжирования Google/Яндекса и используется здесь только как индикатор.</p>
+
+<h2>6. План работ</h2>
+<p>Без календарной разбивки — три блока в порядке приоритета. Блоки 1 и 2 — разовые работы, блок 3 — процессы, которые запускаются параллельно и продолжаются постоянно.</p>
+
+<h3>Приоритет 1 — Quick Wins (делается сразу, малой кровью)</h3>
+<table>
+<tr><th>Действие</th><th>Ресурс</th><th>Ожидаемый эффект</th></tr>
+<tr><td>noindex на ~150 promo/thank-you/form-страниц; пересборка sitemap до 30–40 контентных URL</td><td>1–2 дня в админке Tilda</td><td>Концентрация краулингового бюджета и «качества домена»; снятие массовых дублей</td></tr>
+<tr><td>hreflang + lang-атрибуты на 16 страниц 4 кластеров</td><td>1 день (head-вставки)</td><td>Правильный языковой таргетинг, рост CTR из локальных выдач</td></tr>
+<tr><td>JSON-LD: Organization + BreadcrumbList на все страницы; FAQPage на 3 страницы виз</td><td>2–3 дня</td><td>Rich-сниппеты, машиночитаемость для AI-поиска</td></tr>
+<tr><td>H1/H2 на всех 31 страницах; переписать 20 Title и 13 Description; убрать дубль Description</td><td>3–4 дня</td><td>Рост релевантности и CTR (xtool-оценка заголовков с 0%)</td></tr>
+<tr><td>Починить ссылки лицензий, опечатки, убрать блок «Olga не принимает клиентов» из топа</td><td>0,5 дня</td><td>Доверие и конверсия</td></tr>
+<tr><td>Подключить/проверить Google Search Console, снять базу CWV и Google-трафика</td><td>0,5 дня</td><td>Закрытие главного пробела данных</td></tr>
+</table>
+
+<h3>Приоритет 2 — скорость, структура, контент</h3>
+<ul>
+<li><b>Скорость:</b> ревизия блоков на 5 самых тяжёлых страницах (/otzyvy 1,1 МБ; /tg 631 КБ; кейсы ~600 КБ), WebP, фасады видео, удаление дублей попапов. Цель: HTML &lt;250 КБ, TTFB &lt;0,5 с, зелёные CWV mobile.</li>
+<li><b>Внутренняя перелинковка:</b> статичные блоки кейсов на главной/визах, анкоры с ключами вместо «More →», возврат /political* в навигацию, перелинковка кейс↔виза. Цель: ни одной контентной страницы глубже 2 кликов и менее чем с 5 inlinks.</li>
+<li><b>Контент:</b> запуск регулярного блога в /news (изменения USCIS, разборы виз, сравнения O-1/EB-1A/EB-2 NIW); транскрипты видеоотзывов на /otzyvy; страница /about (команда, реквизиты).</li>
+<li><b>Разметка 2-я волна:</b> Article на кейсы, VideoObject на отзывы, AggregateRating после запуска внешних отзывов.</li>
+<li><b>Отзывы:</b> Google Business Profile + Trustpilot, миграция части отзывов туда.</li>
+</ul>
+
+<h3>Приоритет 3 — постоянные процессы (запускаются параллельно с блоками 1–2)</h3>
+<ul>
+<li><b>Линкбилдинг:</b> равномерно наращивать новые тематические домены-доноры (без резких всплесков — Link Spam уже 16%): гостевые публикации на EN-ресурсах об иммиграции, каталоги юруслуг США, цифровой PR на основе кейс-статистики («95% одобрений», «EB-1A за 13 дней после 4 отказов» — готовые инфоповоды). Цель: 100+ доменов, TF ≥ 12, доля EN-доноров ≥ 25%.</li>
+<li><b>Google/EN-направление:</b> полноценный EN-контент-хаб (сейчас EN-страниц меньше, чем RU), таргетинг запросов «O-1 visa lawyer», «EB-1A requirements» — после исправления hreflang и скорости.</li>
+<li><b>GEO/AEO-программа:</b> сравнительные таблицы и FAQ на каждой услуге, мониторинг цитируемости бренда в ChatGPT/Perplexity/AI Overviews по запросам ниши, наращивание упоминаний бренда в проверяемых источниках.</li>
+<li><b>Контроль:</b> регулярный мини-аудит (индексация vs sitemap, CWV, прирост доменов, позиции Яндекс/Google) — метрики успеха: индекс ≈ sitemap ≈ 40–60 URL; рост небрендового Google-трафика с нуля до измеримого; скорость переиндексации Яндекса &gt;1 стр./сутки.</li>
+</ul>
+
+<footer>
+SEO-аудит migrator.me · подготовлен 04.06.2026 · Источники: Screaming Frog internal_all.xlsx (31 URL), xtool.ru (JSON/PDF/дашборд от 04.06.2026), бэкап HTTrack (38 HTML), живой сайт (robots.txt, sitemap.xml — 180 URL, выборочные проверки страниц). Сторонние метрики (XT, TF/CF, оценки трафика) — индикативные. Пробелы данных: полевые Core Web Vitals, статистика Google Search Console.
+</footer>
+
+</div>
+</body>
+</html>

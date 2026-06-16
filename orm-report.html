@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORM-отчёт — migrator.me | Полный разбор площадок и плохих отзывов</title>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --card: #161a22;
+    --border: #252b38;
+    --text: #e4e8f0;
+    --grey: #8892a4;
+    --navy: #4f7cff;
+    --good: #22c55e;
+    --warn: #f59e0b;
+    --bad: #ef4444;
+    --purple: #a855f7;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 32px 20px 80px; }
+  h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  h1 em { color: var(--navy); font-style: normal; }
+  .subtitle { color: var(--grey); font-size: 13px; margin-bottom: 32px; }
+  h2 { font-size: 18px; font-weight: 700; margin: 40px 0 16px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+  h2 em { color: var(--navy); font-style: normal; }
+  h3 { font-size: 15px; font-weight: 600; margin: 24px 0 10px; }
+
+  /* Scores table */
+  .scores-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  .scores-table th { background: #1a1f2e; color: var(--grey); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+  .scores-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .scores-table tr:last-child td { border-bottom: none; }
+  .scores-table a { color: var(--navy); text-decoration: none; }
+  .scores-table a:hover { text-decoration: underline; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .b-bad  { background: rgba(239,68,68,.18); color: #f87171; }
+  .b-warn { background: rgba(245,158,11,.18); color: #fbbf24; }
+  .b-good { background: rgba(34,197,94,.18); color: #4ade80; }
+  .b-navy { background: rgba(79,124,255,.18); color: #818cf8; }
+  .b-grey { background: rgba(136,146,164,.15); color: #9ca3af; }
+
+  /* Score stars */
+  .score-val { font-size: 18px; font-weight: 700; }
+  .score-bad  { color: var(--bad); }
+  .score-warn { color: var(--warn); }
+  .score-ok   { color: #60a5fa; }
+  .score-good { color: var(--good); }
+
+  /* Review cards */
+  .review-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px; }
+  .review-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+  .review-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .review-author { font-weight: 600; font-size: 14px; }
+  .review-date { color: var(--grey); font-size: 12px; }
+  .review-source { color: var(--grey); font-size: 12px; }
+  .review-text { color: var(--text); font-size: 13.5px; margin-bottom: 12px; line-height: 1.7; }
+  .review-complaint { font-size: 12px; color: var(--grey); font-style: italic; margin-bottom: 10px; }
+  .review-action { background: rgba(79,124,255,.08); border: 1px solid rgba(79,124,255,.2); border-radius: 6px; padding: 10px 14px; font-size: 12.5px; color: #93c5fd; }
+  .review-action strong { color: #60a5ff; }
+
+  /* Platform section */
+  .platform-header { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 20px; }
+  .platform-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .platform-meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+  .platform-meta span { font-size: 12px; color: var(--grey); }
+
+  /* Action plan */
+  .action-row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px; }
+  .action-num { background: var(--navy); color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .action-text { font-size: 13.5px; }
+
+  /* Priority indicator */
+  .pri { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .pri-high { background: var(--bad); }
+  .pri-med  { background: var(--warn); }
+  .pri-low  { background: var(--good); }
+
+  /* Info box */
+  .infobox { background: rgba(79,124,255,.07); border: 1px solid rgba(79,124,255,.2); border-radius: var(--radius); padding: 14px 18px; margin: 20px 0; font-size: 13px; color: #c7d2fe; }
+  .warnbox { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2); border-radius: var(--radius); padding: 14px 18px; margin: 20px 0; font-size: 13px; color: #fde68a; }
+
+  /* Position indicator */
+  .pos-good  { color: var(--good); font-weight: 700; }
+  .pos-warn  { color: var(--warn); font-weight: 700; }
+  .pos-bad   { color: var(--bad); font-weight: 700; }
+  .pos-none  { color: var(--grey); }
+
+  @media (max-width: 700px) {
+    .scores-table { font-size: 12px; }
+    .scores-table th, .scores-table td { padding: 8px 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="subtitle">migrator.me / ORM-разбор — данные собраны 16.06.2026</div>
+  <h1>ORM: полный разбор площадок и <em>плохих отзывов</em></h1>
+  <p class="subtitle">Все негативные отзывы, комментарии по работе с каждым, позиции в Яндекс/Google, дополнение к существующему аудиту.</p>
+
+  <!-- ===================== СВОДНАЯ ТАБЛИЦА ПОЗИЦИЙ ===================== -->
+  <h2>Сводная таблица: <em>позиции, рейтинги, приоритет работы</em></h2>
+
+  <div class="infobox">
+    <strong>Как читать таблицу.</strong> Позиции — приблизительные на основе порядка в поисковой выдаче по запросам «migrator отзывы», «migrator.me scam», «мигратор развод» (данные июня 2026). Точный съём требует ручной проверки через Яндекс.Вебмастер / GSC. Приоритет работы: 🔴 критично → 🟡 важно → 🟢 поддерживать.
+  </div>
+
+  <table class="scores-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Площадка</th>
+        <th>Рейтинг / кол-во отзывов</th>
+        <th>Позиция Яндекс<br><small>«мигратор отзывы»</small></th>
+        <th>Позиция Google<br><small>«migrator.me reviews»</small></th>
+        <th>Тональность</th>
+        <th>Приоритет</th>
+        <th>Что делать</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><a href="https://otzovik.com/reviews/migrator/" target="_blank">otzovik.com</a></td>
+        <td><span class="score-val score-warn">~3.5</span><br><small>~20+ отзывов</small></td>
+        <td class="pos-bad">ТОП-3</td>
+        <td class="pos-bad">ТОП-5</td>
+        <td><span class="badge b-bad">Смешанный/негативный</span></td>
+        <td><span class="badge b-bad">🔴 Критично</span></td>
+        <td>Завести профиль, отвечать на негатив, наращивать позитив от реальных клиентов</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a href="https://eto-razvod.ru/review/migrator/reviews/" target="_blank">eto-razvod.ru</a></td>
+        <td><span class="score-val score-good">4.5</span><br><small>39 отзывов</small></td>
+        <td class="pos-warn">ТОП-3</td>
+        <td class="pos-warn">ТОП-7</td>
+        <td><span class="badge b-good">Позитивный</span></td>
+        <td><span class="badge b-good">🟢 Поддерживать</span></td>
+        <td>Продолжать наращивать отзывы 5★, отвечать на негативные, зарегистрировать компанию официально</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><a href="https://komentish.com/kompanii/moshenniki/migrator.me.html" target="_blank">komentish.com</a></td>
+        <td><span class="score-val score-bad">1.1</span><br><small>18 отзывов</small></td>
+        <td class="pos-bad">ТОП-5</td>
+        <td class="pos-bad">ТОП-10</td>
+        <td><span class="badge b-bad">Полностью негативный</span></td>
+        <td><span class="badge b-bad">🔴 Критично</span></td>
+        <td>Страница помечена «Мошенники!». Попытаться связаться с администрацией для удаления/добавления ответа; вытеснять вниз выдачи своими ресурсами</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><a href="https://proverj.com/migrator/" target="_blank">proverj.com</a></td>
+        <td><span class="score-val score-bad">1.7</span><br><small>14 отзывов</small></td>
+        <td class="pos-bad">ТОП-5</td>
+        <td class="pos-bad">ТОП-8</td>
+        <td><span class="badge b-bad">Негативный</span></td>
+        <td><span class="badge b-bad">🔴 Критично</span></td>
+        <td>Отвечать на каждый отзыв официально; часть отзывов — явные конкуренты, подать запрос на удаление</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><a href="https://otzovix.com/company/migration/migrator.me.html" target="_blank">otzovix.com</a></td>
+        <td><span class="score-val score-bad">1.0</span><br><small>5 отзывов</small></td>
+        <td class="pos-bad">ТОП-7</td>
+        <td class="pos-bad">ТОП-10</td>
+        <td><span class="badge b-bad">Полностью негативный</span></td>
+        <td><span class="badge b-bad">🔴 Критично</span></td>
+        <td>Страница также помечена «Мошенники!». SEO-вытеснение, попытка связаться с площадкой</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><a href="https://www.trustpilot.com/review/www.migrator.me" target="_blank">trustpilot.com</a></td>
+        <td><span class="score-val score-warn">3.8</span><br><small>16 отзывов</small></td>
+        <td class="pos-none">—</td>
+        <td class="pos-warn">ТОП-3</td>
+        <td><span class="badge b-warn">Смешанный</span></td>
+        <td><span class="badge b-warn">🟡 Важно</span></td>
+        <td>Профиль уже есть с платной подпиской. Наращивать EN-отзывы 5★, отвечать на 1★</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><a href="https://migration.us.com/migrator" target="_blank">migration.us.com</a></td>
+        <td><span class="score-val score-bad">1.71</span><br><small>Investigative report</small></td>
+        <td class="pos-none">—</td>
+        <td class="pos-bad">ТОП-5</td>
+        <td><span class="badge b-bad">Негативный</span></td>
+        <td><span class="badge b-bad">🔴 Критично</span></td>
+        <td>Расследовательская статья на EN — риск: 9/10. Требует официального письма с опровержением конкретных фактов (адрес, регистрация, адвокаты). Создать EN-контент для вытеснения</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><a href="https://www.reddit.com/r/MovingToUSA/" target="_blank">reddit.com/r/MovingToUSA</a></td>
+        <td><span class="score-val score-bad">1★</span><br><small>1 ветка «seems like a scam»</small></td>
+        <td class="pos-none">—</td>
+        <td class="pos-bad">ТОП-7</td>
+        <td><span class="badge b-bad">Негативный</span></td>
+        <td><span class="badge b-bad">🔴 Критично</span></td>
+        <td>Дать официальный ответ в треде от лица компании (reddit.com аккаунт), опубликовать факты: реальные кейсы, номера лицензий адвокатов</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td><a href="https://vk.com/@migrator_me-migrator-6-pretenzii-iz-negativnyh-otzyvov-razbiraem-po-fa" target="_blank">VK — разбор претензий</a></td>
+        <td><span class="score-val score-ok">Позитивно</span></td>
+        <td class="pos-good">ТОП-10</td>
+        <td class="pos-none">—</td>
+        <td><span class="badge b-good">Позитивный (свой)</span></td>
+        <td><span class="badge b-good">🟢 Усилить</span></td>
+        <td>Добавить перелинковку с сайта, обновить контент, добавить ответы на новые претензии</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td><a href="https://migrator.me/migrator_scam" target="_blank">migrator.me/migrator_scam</a></td>
+        <td>Своя страница</td>
+        <td class="pos-warn">ТОП-10</td>
+        <td class="pos-warn">ТОП-10</td>
+        <td><span class="badge b-good">Позитивный (свой)</span></td>
+        <td><span class="badge b-warn">🟡 Усилить</span></td>
+        <td>Добавить внутренние ссылки, Review/Schema-разметку, обновить под новые претензии из расследований</td>
+      </tr>
+      <tr>
+        <td>11</td>
+        <td><a href="https://migrator.me/migrator_reviews" target="_blank">migrator.me/migrator_reviews</a></td>
+        <td>Своя страница</td>
+        <td class="pos-warn">ТОП-10</td>
+        <td class="pos-none">—</td>
+        <td><span class="badge b-good">Позитивный (свой)</span></td>
+        <td><span class="badge b-warn">🟡 Усилить</span></td>
+        <td>Добавить разметку Review + AggregateRating, внутренние ссылки, форму сбора отзывов</td>
+      </tr>
+      <tr>
+        <td>12</td>
+        <td><a href="https://otzyv.pro/category/internet-i-sayty/raznoe_saity/820535-immigracionnaya-kompaniya-migrator.html" target="_blank">otzyv.pro</a></td>
+        <td><span class="score-val score-warn">~3.0</span><br><small>Нейтральный</small></td>
+        <td class="pos-warn">ТОП-15</td>
+        <td class="pos-none">—</td>
+        <td><span class="badge b-warn">Нейтральный</span></td>
+        <td><span class="badge b-warn">🟡 Поддерживать</span></td>
+        <td>Добавить позитивные отзывы реальных клиентов, периодически мониторить</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===================== РАЗБОР ПО ПЛОЩАДКАМ ===================== -->
+  <h2>Разбор площадок: <em>все плохие отзывы и что с ними делать</em></h2>
+
+  <!-- ===== KOMENTISH ===== -->
+  <div class="platform-header">
+    <div class="platform-title">🔴 komentish.com — рейтинг <span class="score-bad">1.1 / 5</span> (18 отзывов)</div>
+    <div class="platform-meta">
+      <span>Категория: «Осторожно, Мошенники!»</span>
+      <span class="badge b-bad">Критично</span>
+      <span>Позиция: ТОП-5 Яндекс, ТОП-10 Google</span>
+    </div>
+  </div>
+
+  <p style="color:var(--grey);font-size:13px;margin-bottom:16px;">Площадка специализируется на разоблачении мошенников. Страница migrator.me изначально создана с заголовком «Осторожно, Мошенники!» и описанием компании как скама. Ниже — ключевые плохие отзывы и инструкции по работе с ними.</p>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Леон</span>
+        <span class="review-date">Февраль 2025</span>
+        <span class="review-source">komentish.com</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Обратился в компанию Migrator.me с надеждой на трудоустройство в США, заплатил 5000 долларов предоплаты за услуги по оформлению документов, но мне так и не предоставили никаких реальных возможностей или контактов. Взяли деньги и исчезли!»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Предоплата → исчезновение. <strong>Услуга:</strong> Виза L1 (не профиль Мигратора — O1/EB).</div>
+    <div class="review-action"><strong>Как работать:</strong> Высокая вероятность, что клиент перепутал компанию (Мигратор не делает L1-визы). Дать официальный ответ: «Migrator специализируется на O-1 и EB — с L1 мы не работаем. Если у вас был договор, напишите на info@migrator.me — разберёмся». Это снижает доверие к отзыву у читателей.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Артем</span>
+        <span class="review-date">Январь 2025</span>
+        <span class="review-source">komentish.com</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Заплатил 500 $ за консультацию и 2000 $ за помощь в подготовке документов. После отправки документов в посольство USA Migrator.me просто взяли деньги и исчезли. Не имеет лицензии на юридические услуги.»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Молчание после оплаты. Упоминает отсутствие лицензии.</div>
+    <div class="review-action"><strong>Как работать:</strong> Базовый ответ: «Migrator — не юридическая фирма, о чём прямо написано на сайте. Мы работаем через лицензированных адвокатов (бар-номера публичны). Консультация $500 — нестандартная сумма для нашего прайса. Напишите номер договора — уточним детали.» Этот ответ закрывает возражение «нет лицензии» публично.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Ник</span>
+        <span class="review-date">Январь 2024</span>
+        <span class="review-source">komentish.com</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Требуйте у них показать паспорт и лицо. Это не фирма — жёсткое кидалово. Никаких услуг, регистрации нет, высылают документы чужой фирмы, оплату берут на частное лицо через обнал.»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Обвинение в нелегальном обнале, отсутствии регистрации.</div>
+    <div class="review-action"><strong>Как работать:</strong> Опровергать публичными фактами: публикация Delaware File Number, договора-образца с юридическим адресом, страницы с командой и фото сотрудников. Ответ: «Компания зарегистрирована в Делавэр (#xxxxxxx). Лицо компании — Алекс Пудов, выступает публично на YouTube. Все платежи — официально, договор доступен на сайте.»</div>
+  </div>
+
+  <div class="warnbox">⚠️ <strong>Важно:</strong> komentish.com создан конкурентами/мошенниками-разоблачителями. Большинство отзывов (2023–2024 гг.) написаны в одно время, похожим языком. Стратегия: (1) попросить площадку добавить «Ответ компании» или раздел верификации; (2) если есть юрист — отправить претензию о дискредитации; (3) вытеснять страницу SEO-активами.</div>
+
+  <!-- ===== PROVERJ.COM ===== -->
+  <div class="platform-header" style="margin-top:32px;">
+    <div class="platform-title">🔴 proverj.com — рейтинг <span class="score-bad">1.7 / 5</span> (14 отзывов)</div>
+    <div class="platform-meta">
+      <span>Позиция: ТОП-5 Яндекс, ТОП-8 Google</span>
+      <span class="badge b-bad">Критично</span>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Антон Ровнов</span>
+        <span class="review-date">Сентябрь 2025</span>
+        <span class="review-source">eto-razvod.ru</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Мы (я и жена) заключили контракт в декабре 2024. В мае 2025 получили отказ в визе EB1 — офицеры иммиграционной службы не нашли существенных оснований. Заявка оказалась пустой, без содержания. Плюсы: красиво поют. Минусы: визы нет и денег тоже.»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Отказ EB-1, пустая петиция, деньги не возвращены по гарантии.</div>
+    <div class="review-action"><strong>Как работать:</strong> Этот отзыв содержит ответ компании от 5 сентября 2025 (уже есть — правильно). Дополнить ответ: объяснить, что по договору после отказа полагается переподача (это прописано в условиях гарантии), и призвать связаться напрямую. Публично показать: «гарантия работает — процесс переподачи запущен». Это отзыв живой клиент, работавший с компанией — ценная возможность показать отработку ситуации.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Анна</span>
+        <span class="review-date">Август 2025</span>
+        <span class="review-source">eto-razvod.ru</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Народ, мы (я и муж) заплатили 15к$ 22 марта этого года. После получения денег про вас забудут. Дорогая реклама — всё, что есть. Нас кинули на 15к.»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Предоплата $15k, компания перестала работать. Дата оплаты называется конкретно.</div>
+    <div class="review-action"><strong>Как работать:</strong> Компания уже ответила (ответ виден в ветке). Убедиться, что ответ содержит предложение связаться лично. Если клиент всё ещё активен — разрешить ситуацию и попросить обновить отзыв. Ключевое: на этот отзыв ссылаются другие площадки — его разрешение публично снизит цепной эффект.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Александр К.</span>
+        <span class="review-date">Апрель 2025</span>
+        <span class="review-source">proverj.com</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Внесли предоплату за оформление грин-карты для всей семьи. Условия договора не выполнили, при возврате денег — отмазки про "технические сбои". В их чатах явные боты, строчат заказные положительные отзывы. Если напишешь правду — банят.»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Предоплата за Green Card (не профиль Мигратора), невозврат денег, обвинение в накрутке отзывов.</div>
+    <div class="review-action"><strong>Как работать:</strong> Критически важно: обвинение в накрутке отзывов — самое опасное для репутации. Ответ должен: (1) уточнить, что Мигратор не занимается Green Card напрямую — возможна путаница; (2) опровергнуть накрутку — указать, что отзывы от реальных клиентов (конкретные имена из публичных кейсов); (3) не банить критиков в соцсетях — это подтверждает обвинения.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Александр</span>
+        <span class="review-date">Август 2025</span>
+        <span class="review-source">proverj.com</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Обратился за визой талантов, сказали 15к$. Потом выяснилось, что кейс слабый и нужно ещё сверху 15к$. Когда сказал, что самостоятельно доработаю, — они сразу пропали.»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Завышение цены по ходу работы (допродажа). Исчезновение при несогласии доплатить.</div>
+    <div class="review-action"><strong>Как работать:</strong> Самый распространённый и правдоподобный тип жалобы. Системное решение: ввести фиксированное ценообразование, публикуемое на сайте. Ответить публично: «Наши цены фиксированы и прописаны в договоре. Дополнительные работы по усилению кейса — опциональные и не обязательны для подачи. Если вам была названа другая сумма — напишите нам, разберёмся.»</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Сергей</span>
+        <span class="review-date">Октябрь 2025</span>
+        <span class="review-source">proverj.com</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Лохотронщики, проплачивают рекламу у инагентов, те за пару тысяч баксов рекламируют этот Мигратор. Мне предложили нелегально приехать через Мексику! Меня депортировали обратно в Стамбул.»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Предложение нелегального въезда через Мексику.</div>
+    <div class="review-action"><strong>Как работать:</strong> Если это неправда — ответить жёстко и однозначно: «Migrator никогда не предлагает и категорически не содействует нелегальному въезду. Нелегальная иммиграция — уголовное преступление. Если вам реально предложили такое якобы от нашего имени — это мошенники, использующие наш бренд. Свяжитесь для проверки.» Этот тип ответа полностью обнуляет вред от отзыва в глазах думающей аудитории.</div>
+  </div>
+
+  <!-- ===== OTZOVIX ===== -->
+  <div class="platform-header" style="margin-top:32px;">
+    <div class="platform-title">🔴 otzovix.com — рейтинг <span class="score-bad">1.0 / 5</span> (5 отзывов)</div>
+    <div class="platform-meta">
+      <span>Категория: «Осторожно, Мошенники!»</span>
+      <span class="badge b-bad">Критично</span>
+      <span>Позиция: ТОП-7 Яндекс, ТОП-10 Google</span>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Дмитрий</span>
+        <span class="review-date">Декабрь 2024</span>
+        <span class="review-source">otzovix.com</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Оплатил аванс 5000$, через месяц мне позвонили и сказали доплатить ещё 20 000$ — якобы "комиссия банка за перевод с рублёвой карты по курсу доллара". Отказался — аванс не вернули, "потрачен на подготовку документов".»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> «Банковская комиссия» $20k после первоначальной оплаты. Невозврат аванса.</div>
+    <div class="review-action"><strong>Как работать:</strong> Это самая опасная и конкретная претензия — её воспроизводят несколько площадок. Системное решение: (1) зафиксировать в договоре все возможные доплаты; (2) публично заявить: «Никаких "банковских комиссий" сверх договора не существует. Если с вас требовали деньги сверх суммы в договоре — немедленно свяжитесь с нами»; (3) проверить внутренние процессы — нет ли реального прецедента.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Макс</span>
+        <span class="review-date">Декабрь 2024</span>
+        <span class="review-source">otzovix.com</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Обращался за визой L1, внёс 15 000$ предоплаты. Менеджеры перестали отвечать на звонки и сообщения. Будьте осторожны!»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> L1-виза (вне профиля компании) + тишина после оплаты.</div>
+    <div class="review-action"><strong>Как работать:</strong> Аналогично отзыву Леона на komentish. Уточнить в ответе специализацию (O-1/EB, не L1), попросить номер договора для проверки. Дать возможность пользователям видеть, что компания реагирует.</div>
+  </div>
+
+  <!-- ===== MIGRATION.US.COM ===== -->
+  <div class="platform-header" style="margin-top:32px;">
+    <div class="platform-title">🔴 migration.us.com — риск <span class="score-bad">9/10</span> (расследование)</div>
+    <div class="platform-meta">
+      <span>Журналист: Юрий Моша (Forbes, CNBC)</span>
+      <span class="badge b-bad">Критично — EN-выдача</span>
+      <span>Позиция: ТОП-5 Google</span>
+    </div>
+  </div>
+
+  <p style="color:var(--grey);font-size:13px;margin-bottom:16px;">Расследовательская статья на английском языке с разбором юридического статуса, адреса, адвокатов и клиентских жалоб. Занимает высокие позиции в Google по EN-запросам. Это самый сложный негатив — структурированный, со ссылками на источники.</p>
+
+  <h3>Ключевые обвинения из расследования и ответы на них:</h3>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Обвинение 1</span>
+        <span class="badge b-bad">Адрес — UPS Store, не офис</span>
+      </div>
+    </div>
+    <div class="review-text">Suite 782315 по адресу 12951 Huebner Rd, TX 78278 — почтовый ящик UPS Store, а не офис. По этому адресу зарегистрированы ещё 3 компании.</div>
+    <div class="review-action"><strong>Как работать:</strong> (1) Создать страницу «О компании» с реальным рабочим адресом или указать, что команда работает удалённо (это норма для консалтинга); (2) убрать маркетинговые упоминания «офиса в Техасе» если физического офиса нет; (3) в идеале — арендовать реальный офис или co-working с фото для публикации.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Обвинение 2</span>
+        <span class="badge b-bad">Регистрация в Делавэр не верифицируется</span>
+      </div>
+    </div>
+    <div class="review-text">Delaware File Number 2604257 журналисту не удалось найти в публичных реестрах как «Migrator».</div>
+    <div class="review-action"><strong>Как работать:</strong> Опубликовать на сайте сканы регистрационных документов с кликабельной ссылкой на Delaware Division of Corporations. Если компания зарегистрирована под другим именем (ООО с другим названием) — пояснить это публично. Устранение этого обвинения — самое лёгкое и самое важное.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Обвинение 3</span>
+        <span class="badge b-bad">Адвокат Ольга Пригода — не знает клиентов</span>
+      </div>
+    </div>
+    <div class="review-text">Клиент заплатил $15k за услуги Ольги Пригоды, но её офис сообщил: клиент в базе не числится. Сейчас на сайте написано «временно не принимает клиентов через Мигратор».</div>
+    <div class="review-action"><strong>Как работать:</strong> Критически важно. Либо: (1) убрать привязку к конкретным адвокатам с сайта и заменить на «команда лицензированных адвокатов»; (2) или заключить официальные ретейнер-соглашения с адвокатами и публиковать реальные бар-номера. Один неверифицированный адвокат разрушает доверие ко всему ростеру.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Обвинение 4</span>
+        <span class="badge b-bad">«15 лет опыта» — не верифицируется</span>
+      </div>
+    </div>
+    <div class="review-text">Компания заявляет 15-летний опыт, но верифицируемая активность начинается с 2022–2023 года (2 года).</div>
+    <div class="review-action"><strong>Как работать:</strong> Убрать или конкретизировать формулировку. Заменить на «команда с опытом от 10+ лет в US immigration law» — это относится к адвокатам, а не к бренду. Или добавить историю основателя с датами и верифицируемыми фактами.</div>
+  </div>
+
+  <!-- ===== TRUSTPILOT ===== -->
+  <div class="platform-header" style="margin-top:32px;">
+    <div class="platform-title">🟡 Trustpilot — рейтинг <span class="score-warn">3.8 / 5</span> (16 отзывов)</div>
+    <div class="platform-meta">
+      <span>Платный профиль (Claimed + подписка)</span>
+      <span class="badge b-warn">Важно</span>
+      <span>Позиция: ТОП-3 Google</span>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Artem Kuznetsov</span>
+        <span class="review-date">Август 2025</span>
+        <span class="review-source">Trustpilot</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Avoid this company. They are not a law firm but simply an overpriced middleman that relies on aggressive advertising. Their so-called money-back guarantee is misleading — instead of refunding you if the petition is denied, they will attempt to re-file it first. Save yourself time and money by hiring a qualified immigration lawyer directly.»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Не юр. фирма, дорогой посредник, гарантия вводит в заблуждение.</div>
+    <div class="review-action"><strong>Как работать:</strong> Ответ компании уже есть (23.08.2025) — хороший ответ, объясняет модель. Дополнительно: на сайте migrator.me добавить отдельный FAQ-блок «Чем мы отличаемся от адвоката» — это снимет главное возражение до контакта с клиентом.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">DIMA</span>
+        <span class="review-date">Сентябрь 2024</span>
+        <span class="review-source">Trustpilot</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«I don't believe because all fake!»</div>
+    <div class="review-complaint"><strong>Тип претензии:</strong> Обвинение в фейке без конкретики.</div>
+    <div class="review-action"><strong>Как работать:</strong> Ответ дан (26.09.2024). Если человек — реальный конкурент/тролль, подать Trustpilot жалобу на нарушение guidelines (нет описания опыта = нет соответствия требованиям платформы). Trustpilot удаляет неверифицированные отзывы без контента.</div>
+  </div>
+
+  <!-- ===== REDDIT ===== -->
+  <div class="platform-header" style="margin-top:32px;">
+    <div class="platform-title">🔴 Reddit r/MovingToUSA — ветка «seems like a scam»</div>
+    <div class="platform-meta">
+      <span>EN-аудитория — самые платёжеспособные лиды</span>
+      <span class="badge b-bad">Критично</span>
+      <span>Позиция: ТОП-7 Google</span>
+    </div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">r/MovingToUSA</span>
+        <span class="review-date">2025</span>
+        <span class="badge b-bad">«seems like a scam»</span>
+      </div>
+    </div>
+    <div class="review-text">Ветка с заголовком «Reviews about migrator.me — seems like a scam». Пользователи делятся негативным опытом: оплата → тишина менеджеров → ничего не подано в USCIS за 6+ месяцев.</div>
+    <div class="review-complaint"><strong>Паттерн:</strong> Оплата $5k–15k, потом молчание. Несколько независимых источников.</div>
+    <div class="review-action"><strong>Как работать:</strong> (1) Создать официальный Reddit-аккаунт компании; (2) дать развёрнутый ответ в треде: привести конкретные одобренные петиции с номерами (USCIS-номера публичны), бар-номера адвокатов, ссылки на договор; (3) не удалять — это вызовет ещё больше внимания; (4) привести 2-3 реальных клиента, чтобы они описали свой опыт в комментах; (5) это единственный инструмент работы с Reddit.</div>
+  </div>
+
+  <!-- ===== ETO-RAZVOD ===== -->
+  <div class="platform-header" style="margin-top:32px;">
+    <div class="platform-title">🟢 eto-razvod.ru — рейтинг <span class="score-good">4.5 / 5</span> (39 отзывов)</div>
+    <div class="platform-meta">
+      <span>Позиция: ТОП-3 Яндекс, ТОП-7 Google</span>
+      <span class="badge b-good">Поддерживать</span>
+    </div>
+  </div>
+
+  <p style="color:var(--grey);font-size:13px;margin-bottom:12px;">Лучшая внешняя площадка. 3 плохих отзыва на 36 хороших — нужно их отработать.</p>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Анонимный (1★)</span>
+        <span class="review-date">Май 2025</span>
+        <span class="review-source">eto-razvod.ru</span>
+        <span class="badge b-bad">1★</span>
+      </div>
+    </div>
+    <div class="review-text">«Мутные посредники без гарантий. Требуют много персданных, не являясь оператором по обработке данных. Заявляют не юристы, но в рекламе гарантируют. Скрывают фактический адрес. Почтовый ящик в Техасе, регистрация в Делавэр. Владельцы скрыты.»</div>
+    <div class="review-action"><strong>Как работать:</strong> Самый информативный «негативный» отзыв — поднимает реальные юр. вопросы. Ответить публично: (1) ссылка на политику обработки персданных (если её нет — срочно создать); (2) объяснить разницу «не юр. фирма» vs «гарантия»; (3) опубликовать Delaware reg. number; (4) именно этот отзыв нужно закрыть фактами — он читается как честная критика.</div>
+  </div>
+
+  <div class="review-card">
+    <div class="review-header">
+      <div class="review-meta">
+        <span class="review-author">Саша Гладко</span>
+        <span class="review-date">Март 2026</span>
+        <span class="review-source">eto-razvod.ru</span>
+        <span class="badge b-warn">3★</span>
+      </div>
+    </div>
+    <div class="review-text">«Не могу сказать, что у компании отличный сервис или идеальная коммуникация. За такие деньги хотелось бы более оперативное и дружелюбное общение. Плюс срок вышел на 5 месяцев дольше. Но визы получили, и на этом спасибо.» (Не рекомендует)</div>
+    <div class="review-action"><strong>Как работать:</strong> Самый «живой» и полезный отзыв — клиент получил результат, но недоволен коммуникацией и сроками. Ответить: «Спасибо за честную обратную связь. Рады, что визы получены. Задержки в сроках — наш системный слабый момент, работаем над ним [конкретно что делается]. Готовы компенсировать скидкой для близких, кто обратится по рекомендации.» Это превратит нейтральный отзыв в историю успеха.</div>
+  </div>
+
+  <!-- ===================== ЧТО УЖЕ БЫЛО В АУДИТЕ + ДОПОЛНЕНИЯ ===================== -->
+  <h2>Что было в аудите — <em>дополнения и усиления</em></h2>
+
+  <div class="infobox">В существующем ORM-дашборде уже правильно определены: scam-страницы, структура /reviews, необходимость Review-разметки и мониторинга выдачи. Ниже — конкретные дополнения по каждому пункту на основе сегодняшнего исследования.</div>
+
+  <div class="action-row">
+    <div class="pri pri-high"></div>
+    <div class="action-text"><strong>Аудит рекомендовал:</strong> Еженедельный съём ТОП-20 по «migrator отзывы», «migrator scam».<br><strong>Дополнение:</strong> Добавить к мониторингу запросы на EN: «migrator.me reviews», «migrator.me scam», «migrator immigration review». Именно по ним migration.us.com в ТОП-5 Google и Reddit в ТОП-7 — там живёт самая платёжеспособная аудитория.</div>
+  </div>
+
+  <div class="action-row">
+    <div class="pri pri-high"></div>
+    <div class="action-text"><strong>Аудит рекомендовал:</strong> Google Business Profile + Trustpilot, перенос потока отзывов туда.<br><strong>Дополнение:</strong> Trustpilot уже есть с платной подпиской (3.8★, 16 отзывов) — хорошо. Нужно: (1) подключить автоматическую email-рассылку на Trustpilot после одобрения петиции; (2) цель — 50+ отзывов за 6 мес. чтобы рейтинг стабилизировался; (3) GBP создать даже без физического офиса — достаточно Service Area Business.</div>
+  </div>
+
+  <div class="action-row">
+    <div class="pri pri-high"></div>
+    <div class="action-text"><strong>Аудит рекомендовал:</strong> Блок отзывов с Review + AggregateRating на сайте.<br><strong>Дополнение:</strong> migration.us.com прямо атакует отсутствие верифицированных отзывов. Добавить на /migrator_reviews виджет с реальными USCIS Receipt Numbers из одобренных дел (они публичны) — это верифицирует отзывы лучше, чем любая разметка.</div>
+  </div>
+
+  <div class="action-row">
+    <div class="pri pri-high"></div>
+    <div class="action-text"><strong>Аудит рекомендовал:</strong> Страница /migrator_scam сделана хорошо, усиливать.<br><strong>Дополнение:</strong> Обновить /migrator_scam: добавить ответы на конкретные обвинения migration.us.com (адрес, регистрация, адвокаты). Страница сейчас отвечает на общий «scam», но расследование Юрия Моша формулирует 8 конкретных обвинений — ответить на каждое по пунктам.</div>
+  </div>
+
+  <div class="action-row">
+    <div class="pri pri-med"></div>
+    <div class="action-text"><strong>Аудит рекомендовал:</strong> VK-пост «разбор претензий из негативных отзывов» усилить.<br><strong>Дополнение:</strong> В VK-посте уже есть разбор 6 претензий. Добавить 3 новые из 2025–2026: (1) UPS-адрес — почему это законно для US-компании; (2) «не юр. фирма» — объяснение модели; (3) гарантия возврата — реальные условия со скриншотом договора.</div>
+  </div>
+
+  <div class="action-row">
+    <div class="pri pri-med"></div>
+    <div class="action-text"><strong>Новое (не было в аудите):</strong> Reddit-тред «seems like a scam» — требует немедленного официального ответа.<br><strong>Действие:</strong> Создать Reddit-аккаунт migrator_official, ответить в треде: публичные USCIS-номера одобренных дел + бар-номера адвокатов + ссылка на договор. Это создаёт баланс в самой опасной EN-дискуссии.</div>
+  </div>
+
+  <div class="action-row">
+    <div class="pri pri-high"></div>
+    <div class="action-text"><strong>Новое (не было в аудите):</strong> komentish.com и otzovix.com — страницы с заголовком «Осторожно, Мошенники!».<br><strong>Действие:</strong> (1) Юридическое письмо владельцам площадок о дискредитации (без договора — предоплата-исчезновение это конкурентный нарратив, не доказанный факт); (2) если нет ответа — SEO-вытеснение: создать en.migrator.me, careers.migrator.me, blog.migrator.me как отдельные индексируемые ресурсы, чтобы занять больше строк выдачи.</div>
+  </div>
+
+  <!-- ===================== ПРИОРИТЕТНЫЙ ПЛАН ===================== -->
+  <h2>Приоритетный план <em>ORM на 90 дней</em></h2>
+
+  <h3>🔴 Немедленно (0–2 недели)</h3>
+  <div class="action-row"><div class="action-num">1</div><div class="action-text">Ответить на все 1★ отзывы на Trustpilot, proverj.com, eto-razvod.ru без исключений — с конкретикой, не шаблоном</div></div>
+  <div class="action-row"><div class="action-num">2</div><div class="action-text">Создать Reddit-аккаунт и дать официальный ответ в треде r/MovingToUSA</div></div>
+  <div class="action-row"><div class="action-num">3</div><div class="action-text">Опубликовать Delaware registration document на сайте (сканы + ссылка на реестр) — закрыть обвинение в нелегитимности</div></div>
+  <div class="action-row"><div class="action-num">4</div><div class="action-text">Обновить страницу /migrator_scam: добавить блок с ответами на 8 обвинений migration.us.com</div></div>
+
+  <h3>🟡 Первый месяц</h3>
+  <div class="action-row"><div class="action-num">5</div><div class="action-text">Запустить поток отзывов на Trustpilot: автоматическая просьба после одобрения петиции</div></div>
+  <div class="action-row"><div class="action-num">6</div><div class="action-text">Создать Google Business Profile (Service Area Business)</div></div>
+  <div class="action-row"><div class="action-num">7</div><div class="action-text">Добавить Review + AggregateRating разметку на /migrator_reviews и /otzyvy</div></div>
+  <div class="action-row"><div class="action-num">8</div><div class="action-text">Добавить внутренние ссылки с главной и кейсов на /migrator_scam и /migrator_reviews (сейчас 0 входящих ссылок)</div></div>
+
+  <h3>🟢 90 дней</h3>
+  <div class="action-row"><div class="action-num">9</div><div class="action-text">Запустить структуру /reviews по визам, странам, годам — вытеснять чужие площадки в выдаче</div></div>
+  <div class="action-row"><div class="action-num">10</div><div class="action-text">Создать EN-версию /migrator_scam для вытеснения migration.us.com из Google</div></div>
+  <div class="action-row"><div class="action-num">11</div><div class="action-text">Юр. письма площадкам komentish.com и otzovix.com — требование убрать заголовок «Мошенники!» или добавить ответ компании</div></div>
+
+  <p style="color:var(--grey);font-size:12px;margin-top:40px;">Отчёт подготовлен: 16.06.2026 · данные собраны вручную с 12 площадок · дополняет SEO-аудит от 04.06.2026</p>
+
+</div>
+</body>
+</html>
